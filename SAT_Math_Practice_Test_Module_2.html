@@ -1,0 +1,640 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head><meta name="allchatbots-layout" content="large">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAT Math Practice Test: Module 2</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#1d2433;background:#e9ecf1;font-size:15px}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none !important}
+.muted{color:#5b6475}
+.screen{position:fixed;inset:0;overflow:auto;background:#e9ecf1;z-index:10}
+.wrap{max-width:760px;margin:0 auto;padding:36px 18px 60px}
+.card{background:#fff;border:1px solid #c9ced8;border-radius:8px;padding:26px;margin-bottom:18px}
+h1{margin:0 0 6px;color:#1f3a68;font-size:26px}
+h2{margin:0 0 10px;color:#1f3a68;font-size:18px}
+ul.rules{padding-left:20px;line-height:1.7}
+.field{margin-top:18px}
+.field label{display:block;font-weight:600;margin-bottom:6px}
+.text-in{width:100%;padding:11px 12px;font-size:16px;border:1px solid #9aa3b5;border-radius:6px}
+.err{color:#c62828;font-size:14px;min-height:20px;margin-top:6px}
+.btn{padding:10px 18px;font-size:15px;font-weight:600;border:1px solid #1f3a68;border-radius:6px;background:#fff;color:#1f3a68}
+.btn.primary{background:#1f3a68;color:#fff}
+.btn:disabled{opacity:.4;cursor:default}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.score-big{font-size:40px;font-weight:700;color:#1f3a68;margin:6px 0 10px}
+.item{border-top:1px solid #c9ced8;padding:14px 0}
+.item .q{margin:6px 0 4px;font-weight:600;white-space:pre-line}
+.item .meta{font-size:14px;color:#3b4252;margin-top:3px}
+.item .ex{font-size:14px;color:#3b4252;margin-top:8px;line-height:1.5}
+.tag{display:inline-block;font-size:13px;font-weight:700;padding:2px 9px;border-radius:999px;margin-left:8px}
+.tag.ok{background:#d7efd9;color:#17602a}
+.tag.bad{background:#fbe0e0;color:#9b1c1c}
+.tag.blank{background:#e6e9ef;color:#5b6475}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .15em;line-height:1.15}
+.fr>span:first-child{border-bottom:1.2px solid currentColor;padding:0 .3em}
+.fr>span:last-child{padding:0 .3em}
+table.dt{border-collapse:collapse;margin:10px 0}
+table.dt th,table.dt td{border:1px solid #9aa3b5;padding:6px 14px;text-align:center;font-size:16px;background:#fff}
+table.dt th{background:#f0f3f8}
+.ref table{border-collapse:collapse;width:100%;margin-top:6px}
+.ref td{border-bottom:1px solid #e1e5ec;padding:8px 6px;vertical-align:middle}
+.ref td.f{font-size:16px;width:45%}
+
+/* Test layout */
+#test{position:fixed;inset:0;display:flex;flex-direction:column;background:#fff;z-index:5}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:6px 12px;min-height:54px;border-bottom:1px solid #c9ced8}
+.tb-left,.tb-right{display:flex;gap:6px;flex:1 1 0;align-items:center}
+.tb-right{justify-content:flex-end}
+.tb-center{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.modtitle{font-weight:700;color:#1f3a68;white-space:nowrap}
+.timer{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;padding:4px 12px;border:1px solid #c9ced8;border-radius:6px;min-width:96px;text-align:center}
+.timer.warn{color:#c62828;border-color:#c62828}
+.tb-btn{background:none;border:1px solid transparent;padding:7px 10px;border-radius:6px;color:#1f3a68;font-weight:600}
+.tb-btn:hover{background:#eef3fb}
+.body{flex:1;display:flex;min-height:0}
+.qpane{flex:1;display:flex;flex-direction:column;min-width:0}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 18px;border-bottom:1px solid #c9ced8;background:#fafbfc}
+.qnum{font-weight:700}
+.mark{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #9aa3b5;border-radius:6px;padding:6px 10px;font-weight:600;color:#1d2433}
+.mark svg{width:16px;height:16px;fill:none;stroke:#d9731a;stroke-width:2}
+.mark.on{border-color:#d9731a;background:#fff4e8}
+.mark.on svg{fill:#d9731a}
+.qscroll{flex:1;overflow-y:auto;padding:22px 28px}
+.qcontent{max-width:760px}
+.prompt{font-size:17px;line-height:1.65}
+.fig{display:block;max-width:100%;height:auto;margin:6px 0 14px;background:#fff}
+.choices{display:grid;gap:10px;margin-top:20px}
+.choice{display:flex;gap:12px;align-items:center;text-align:left;width:100%;padding:12px 14px;background:#fff;border:1px solid #9aa3b5;border-radius:8px;font-size:16px;color:#1d2433}
+.choice:hover{background:#f5f8fc}
+.choice.sel{border:2px solid #1f3a68;background:#eef3fb;padding:11px 13px}
+.letter{flex:0 0 30px;height:30px;border:1.5px solid #4a5263;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700}
+.choice.sel .letter{background:#1f3a68;border-color:#1f3a68;color:#fff}
+.numbox{margin-top:24px}
+.numbox label{display:block;font-weight:600;margin-bottom:8px}
+.numbox input{width:260px;max-width:100%;padding:11px 12px;font-size:18px;border:1.5px solid #4a5263;border-radius:6px}
+.hint{color:#5b6475;font-size:14px;margin-top:8px}
+
+/* Calculator panel */
+.calc{width:440px;display:flex;flex-direction:column;border-left:1px solid #c9ced8;min-height:0;background:#fff}
+.calc.off{display:none}
+.calc-head{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;border-bottom:1px solid #c9ced8;font-weight:700;color:#1f3a68}
+.calc-body{position:relative;flex:1;min-height:0;overflow:auto}
+#calcHost{position:absolute;inset:0}
+.fb-calc{padding:10px;font-size:14px}
+.fb-calc .row{display:flex;gap:6px;margin-bottom:6px}
+.fb-calc input{flex:1;padding:7px 8px;border:1px solid #9aa3b5;border-radius:6px;font-size:15px}
+.fb-calc canvas{width:100%;height:300px;border:1px solid #c9ced8;border-radius:6px;background:#fff}
+.fb-calc .tip{font-size:12px;color:#5b6475;margin-top:6px}
+
+/* Bottom bar and navigator */
+.bottombar{display:flex;align-items:center;gap:10px;padding:6px 10px;border-top:1px solid #c9ced8;background:#f6f7f9}
+.who{font-size:13px;color:#5b6475;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav{flex:1;min-width:0;display:flex;gap:6px;overflow-x:auto;padding:8px 6px;align-items:center}
+.sq{position:relative;flex:0 0 34px;height:34px;border:1px solid #8b93a3;border-radius:4px;background:#fff;font-weight:700;color:#1d2433;padding:0}
+.sq.ans{background:#23843a;border-color:#23843a;color:#fff}
+.sq.cur{box-shadow:0 0 0 2px #1f3a68}
+.sq.flag::after{content:"";position:absolute;top:-1px;right:-1px;border-top:11px solid #d9731a;border-left:11px solid transparent;border-top-right-radius:3px}
+.bb-right{display:flex;gap:8px;flex:0 0 auto}
+
+/* Modals */
+.modal-bg{position:fixed;inset:0;background:rgba(20,28,45,.5);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal{background:#fff;border-radius:8px;max-width:560px;width:100%;padding:22px;max-height:88vh;overflow:auto}
+.modal.wide{max-width:720px}
+.toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:#1d2433;color:#fff;padding:10px 16px;border-radius:6px;z-index:60}
+
+@media (max-width:900px){
+  .calc{position:fixed;inset:0;width:100%;z-index:20}
+  .who{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Start screen -->
+<div class="screen" id="start">
+  <div class="wrap">
+    <div class="card">
+      <h1>SAT Math Practice Test: Module 2</h1>
+      <p class="muted">22 questions · 35 minutes</p>
+      <ul class="rules">
+        <li>Enter your name to begin. The timer starts as soon as you press Begin.</li>
+        <li>Use Mark for review to flag questions you want to revisit.</li>
+        <li>Use the question navigator at the bottom to move between questions.</li>
+        <li>The Desmos calculator and the reference sheet are available during the test.</li>
+        <li>When time runs out, the module is submitted automatically.</li>
+      </ul>
+      <div class="field">
+        <label for="nameIn">Your name</label>
+        <input class="text-in" id="nameIn" type="text" maxlength="60" placeholder="Enter your name">
+        <div class="err" id="nameErr"></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="beginBtn">Begin Module 2</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Test screen -->
+<div id="test" class="hidden">
+  <div class="topbar">
+    <div class="tb-left">
+      <span class="modtitle">Module 2</span>
+    </div>
+    <div class="tb-center">
+      <span class="timer" id="timer">35:00</span>
+    </div>
+    <div class="tb-right">
+      <button class="tb-btn" id="refBtn">Reference</button>
+      <button class="tb-btn" id="calcBtn">Calculator</button>
+      <button class="tb-btn" id="submitBtn">Submit</button>
+    </div>
+  </div>
+  <div class="body">
+    <div class="qpane">
+      <div class="qhead">
+        <span class="qnum" id="qnum">Question 1 of 22</span>
+        <button class="mark" id="markBtn" type="button">
+          <svg viewBox="0 0 16 16"><path d="M3 2h10v12l-5-3-5 3z"/></svg>
+          <span id="markTxt">Mark for review</span>
+        </button>
+      </div>
+      <div class="qscroll">
+        <div class="qcontent" id="qcontent"></div>
+      </div>
+    </div>
+    <div class="calc off" id="calcPanel">
+      <div class="calc-head"><span>Desmos Calculator</span><button class="tb-btn" id="calcClose">Close</button></div>
+      <div class="calc-body"><div id="calcHost"></div></div>
+    </div>
+  </div>
+  <div class="bottombar">
+    <button class="btn" id="prevBtn">Previous</button>
+    <div class="nav" id="nav"></div>
+    <div class="bb-right">
+      <button class="btn" id="nextBtn">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- Results -->
+<div class="screen hidden" id="results">
+  <div class="wrap">
+    <div class="card">
+      <h1>Module 2 results</h1>
+      <p class="muted" id="whoLine"></p>
+      <div class="score-big" id="scoreBig"></div>
+      <p id="scoreMsg"></p>
+      <div class="btn-row">
+        <button class="btn primary" id="reviewBtn">Review answers</button>
+        <button class="btn" id="restartBtn">Retake</button>
+      </div>
+    </div>
+    <div class="card hidden" id="reviewCard"></div>
+  </div>
+</div>
+
+<div id="modalHost"></div>
+
+<script>
+const QUESTIONS = [
+{ n:1, type:"mc", text:"The amount of water y, in gallons, in a reservoir x minutes after the reservoir begins to drain using a pump is given by the equation y = 7200 − 8x. If the equation is graphed in the xy-plane, which of the following is the best interpretation of the x-intercept?",
+  choices:["There are 900 gallons of water in the reservoir before it begins to drain.","The reservoir drains at a rate of 8 gallons per minute.","There are 7,200 gallons of water in the reservoir before it begins to drain.","The water will completely drain from the reservoir 900 minutes after the reservoir begins to drain."],
+  answer:3, exp:"Setting y = 0 gives 7200 − 8x = 0, so x = 900. The x-intercept is the time when the reservoir is empty." },
+
+{ n:2, type:"num", val:88, tol:0.001,
+  fig:`<table class="dt"><tr><th>Group</th><th>Number of objects</th></tr><tr><td>A</td><td>87</td></tr><tr><td>B</td><td>225</td></tr><tr><td>C</td><td>423</td></tr><tr><td>D</td><td>58</td></tr><tr><td><b>Total</b></td><td><b>793</b></td></tr></table>`,
+  text:"The number of objects in group C is p% more than the number of objects in group B. What is the value of p?",
+  exp:"423 = 225(1 + p/100), so 1 + p/100 = 1.88 and p = 88." },
+
+{ n:3, type:"num", val:37/36, tol:0.001,
+  text:"The measure of angle F is 145 degrees. The measure of angle G is π/12 radians less than the measure of angle F. The measure of angle H is 55 degrees more than the measure of angle G. If the measure of angle H, in radians, is mπ, what is the value of m? (Enter your answer as a fraction or decimal.)",
+  exp:"Convert to radians: 145° = 29π/36 and π/12 = 3π/36, so G = 26π/36. Then H = G + 55° = 26π/36 + 11π/36 = 37π/36, so m = 37/36." },
+
+{ n:4, type:"num", val:76800, tol:0.5,
+  text:"The function f is defined by f(x) = 6(x − 2)(x² − k), where k is a constant. In the xy-plane, the graph of y = f(x) passes through the point (−80, 0). What is the value of f(0)?",
+  exp:"Since x − 2 = −82 is not zero at x = −80, the factor x² − k must be zero: 6400 − k = 0, so k = 6400. Then f(0) = 6(−2)(−6400) = 76,800." },
+
+{ n:5, type:"mc", text:"For angle A, the value of tan(A) = √3/3. Which of the following could be the measure of angle A, in radians?\nI. 25π/6\nII. 53π/6\nIII. 77π/6",
+  choices:["I only","I and II only","I and III only","I, II and III"], answer:0,
+  exp:"25π/6 = 4π + π/6, where tan = √3/3. 53π/6 and 77π/6 are coterminal with 5π/6, where tan = −√3/3." },
+
+{ n:6, type:"mc", text:"The maximum temperature on April 1, in degrees Fahrenheit (°F), was recorded each year at a certain weather station for 11 years. The histogram summarizes the recorded data set. The temperature of 77.9°F is removed from this data set to create a new data set of 10 temperatures. Which of the following statements must be true?\nI. The mean of the new data set is less than the mean of the original data set.\nII. The median of the new data set is less than the median of the original data set.\nIII. The standard deviation of the new data set is less than the standard deviation of the original data set.",
+  fig:"HIST",
+  choices:["I and II only","II and III only","I and III only","I only"], answer:2,
+  exp:"I is true because 77.9°F is well above the mean, so removing it lowers the mean. III is true because 77.9°F lies far more than one standard deviation from the mean, so removing it lowers the spread. II is not guaranteed: the median is the average of the 5th and 6th values, which may stay the same or change depending on the exact values." },
+
+{ n:7, type:"mc", text:"The function P(x) = 685(1.128)^(x/14) models the number of gray seal pups each year from 1767 through 1997 on Sable Island, Nova Scotia, where x is the number of years after 1767. Which of the following is the best interpretation of “P(5 · 14) is approximately equal to 1,251” in this context?",
+  choices:["The number of gray seal pups is estimated to be 1251 greater in 1837 than in 1767.","The number of gray seal pups is estimated to be 70 times greater in 1837 than in 1767.","The number of gray seal pups is estimated to be approximately 1,251 at the end of 5 fourteen-year periods after 1767.","The number of gray seal pups is estimated to increase by approximately 1,251 every 5 fourteen-year periods between 1767 and 1837."],
+  answer:2, exp:"P(70) is the estimate at x = 70, which is 70 years after 1767, or 1837, at the end of 5 fourteen-year periods." },
+
+{ n:8, type:"mc", text:"Before liftoff, one of a space shuttle's solid rocket boosters contained 478,000 kilograms (kg) of propellant. Exactly 17 seconds after liftoff, 392,949 kg of this propellant remained. On average, approximately how much propellant, in kg, did this solid rocket booster burn each second after liftoff?",
+  choices:["51,232","5,003","23,115","85,051"], answer:1, exp:"(478,000 − 392,949) ÷ 17 = 85,051 ÷ 17 = 5,003 kg per second." },
+
+{ n:9, type:"mc", text:"In triangle ABC and triangle XYZ, the measures of angles A and X are each 20 degrees, and the lengths of AB and XY are each 16 centimeters. Which of the following additional pieces of information is (are) sufficient to prove that triangle ABC is congruent to triangle XYZ?\nI. The measures of angles C and Z are each 25°.\nII. AB/AC = XY/XZ",
+  choices:["I is sufficient, and II is sufficient.","II is sufficient, but I is not.","Neither I nor II is sufficient.","I is sufficient, but II is not."], answer:0,
+  exp:"I gives two angle pairs and the side AB opposite angle C and angle Z, so AAS applies. II with AB = XY gives AC = XZ, and the included angles are equal, so SAS applies." },
+
+{ n:10, type:"mc", text:"Note: Figure not drawn to scale\nThe figure shown is a trirectangular tetrahedron, a three-dimensional figure with four triangular faces, three of which are right triangles. A chemistry professor uses trirectangular tetrahedrons to create large-scale models of various carbon-based molecules. The base of one of these tetrahedrons is an isosceles right triangle whose legs each have length of 14 inches (in). The height of this tetrahedron is 15 in. Which of the following is closest to the volume of this tetrahedron, in pints? (Note: 1 pint = 0.5 quarts; use 1 quart = 57.75 in³. The volume of a trirectangular tetrahedron is equal to Sh/3, where S is the area of its base, and h is its height.)",
+  fig:"TET",
+  choices:["14,148.75","16.9","490.00","101.82"], answer:1,
+  exp:"S = ½(14)(14) = 98 in². V = 98 × 15 ÷ 3 = 490 in³. In quarts: 490 ÷ 57.75 ≈ 8.48. In pints: 8.48 ÷ 0.5 ≈ 16.97, closest to 16.9." },
+
+{ n:11, type:"num", val:0.028, tol:0.0005,
+  text:"Compound A is 0.9% potassium chloride. Compound B is 0.025% potassium chloride. Compounds A and B are mixed together to form a new compound that weighs 140 grams and contains 0.28 grams of potassium chloride. What is the mass of potassium chloride in compound B, in grams?",
+  exp:"Let a and b be the masses of A and B. Then a + b = 140 and 0.009a + 0.00025b = 0.28. This gives a = 28 and b = 112. The potassium chloride in B is 0.00025 × 112 = 0.028 g." },
+
+{ n:12, type:"mc", text:"The length of a rectangle is 45 inches and the width is x inches. The perimeter is at most 150 inches. Which inequality represents this situation?",
+  choices:["2x + 45 ≤ 150","2x + 45 ≥ 150","2x + 90 ≤ 150","2x + 90 ≥ 150"], answer:2, exp:"The perimeter is 2(45) + 2x = 2x + 90, and it is at most 150." },
+
+{ n:13, type:"mc", text:"A sample consisted of 750 people selected at random from all adult residents in a certain city. Based on the sample, the estimated percentage of all adult residents who think taxes are too high was 62%, with an associated margin of error of 3.47%. Which of the following best describes the range of plausible values for the percentage of all adult residents in the city who think taxes are too high?",
+  choices:["Any value greater than 65.47%","Any value greater than 58.53% and less than 65.47%","Any value less than 58.53% or greater than 65.47%","Any value less than 58.53%"], answer:1,
+  exp:"62 ± 3.47 gives the interval from 58.53% to 65.47%. Plausible values lie inside it." },
+
+{ n:14, type:"mc", text:"The given equation relates the numbers j, k, and m: 11j + 9k = m. Which equation correctly expresses k in terms of j and m?",
+  choices:["k = (1/9)m − 11j","k = (m − 11j)/9","k = 9m − 11j","k = (11j − m)/9"], answer:1, exp:"Subtract 11j from both sides: 9k = m − 11j. Divide by 9: k = (m − 11j)/9." },
+
+{ n:15, type:"mc", text:"The equation 4x + 2y = 6 is part of a system of two linear equations. If the system has at least one solution, which of the following could be the other equation?\nI. 6x + 3y = 9\nII. 6x − 3y = 9",
+  choices:["I only","II only","Both I and II","Neither I nor II"], answer:2,
+  exp:"I is 1.5 times the first equation, so the two lines are the same and the system has infinitely many solutions. II has a different slope, so the lines cross at one point. Both give at least one solution." },
+
+{ n:16, type:"mc", text:"At a depth of h meters below the surface, the estimated total pressure P₁, in kPa, a diver experiences is given by P₁ = 9.8h + 100. After maintaining a certain depth, the diver descends d additional meters. The estimated total pressure P₂, in kPa, after descending is given by P₂ = 9.8d + 300. Which of the following best interprets 300 in this context?",
+  choices:["The estimated total pressure at depth d meters.","The estimated increase in pressure per 1-meter depth increase.","The estimated total pressure when beginning the additional descent.","The estimated increase in pressure for descending d meters."], answer:2,
+  exp:"When d = 0, P₂ = 300, so 300 is the pressure at the moment the extra descent begins." },
+
+{ n:17, type:"num", val:2/13, tol:0.001,
+  text:"Each of the whole numbers from 5 to 30 is written on one of 26 identical pieces of paper. The pieces of paper are then put into a hat and mixed together. If a piece of paper is selected at random, what is the probability that the number on it is a multiple of 7? (Express your answer as a decimal or fraction, not as a percent.)",
+  exp:"The multiples of 7 from 5 to 30 are 7, 14, 21, and 28. That is 4 out of 26, which is 2/13." },
+
+{ n:18, type:"mc", text:"In the xy-plane, a parabola has vertex (−6, −15) and no x-intercepts. If the equation of the parabola is written in the form y = ax² + bx + c, which of the following could be the value of a + b + c?",
+  choices:["−24","−15","−8","−3"], answer:0,
+  exp:"The parabola is y = a(x + 6)² − 15, and a + b + c = f(1) = 49a − 15. No x-intercepts requires a < 0, so f(1) < −15. Only −24 satisfies this (for example, a = −9/49)." },
+
+{ n:19, type:"num", val:7, tol:0.001,
+  text:"A circle in the xy-plane has the equation (x + 4)² + (y − 7)² = 32. Line k is tangent to the circle at (0, 3). The equation for line k is represented by the linear function k(x). For what value of x does k(x) = 10?",
+  exp:"(0, 3) is on the circle, since 16 + 16 = 32. The radius to that point has slope −1, so the tangent has slope 1 and k(x) = x + 3. Setting k(x) = 10 gives x = 7." },
+
+{ n:20, type:"num", val:4, tol:0.001,
+  text:"The quadratic functions f(x) = x² + 4x − 5 and g(x) = x² + x − 20 have solutions j, k and l, m respectively, where j < k and l < m. The quadratic function h(x) = x² + 5x + c has solutions k + l and m + j. If h(x) can be rewritten as (x + a)(x + b), what is the value of c?",
+  exp:"f has roots −5 and 1, so j = −5 and k = 1. g has roots −5 and 4, so l = −5 and m = 4. The roots of h are k + l = −4 and m + j = −1, so h(x) = (x + 4)(x + 1) = x² + 5x + 4 and c = 4." },
+
+{ n:21, type:"num", val:24, tol:0.001,
+  text:"The edge length of the square base and the height of a right square pyramid are integers, and the pyramid has a volume of 10,368 cubic inches. If the slant height is 30 inches, what is the height, in inches, of this pyramid?",
+  exp:"Volume s²h/3 = 10,368 gives s²h = 31,104. Slant height gives h² + (s/2)² = 900. With s = 36 and h = 24: 24² + 18² = 900, and 36² × 24 ÷ 3 = 10,368." },
+
+{ n:22, type:"mc", text:"The functions f and g are defined by the given equations, where x ≥ 0. Which of the following equations displays, as a constant or coefficient, the minimum value of the function it defines, where x ≥ 0?\nI. f(x) = 15(0.85)^x + 20\nII. g(x) = 10(1.02)^x",
+  choices:["I only","II only","I and II","Neither I nor II"], answer:1,
+  exp:"g has its minimum value 10 at x = 0, and 10 is its coefficient. f decreases toward 20 but never reaches it for x ≥ 0, so 20 is not a minimum value." }
+];
+
+const TOTAL = QUESTIONS.length;
+const TIME_LIMIT = 35 * 60;
+let S = { name:"", idx:0, answers:{}, marks:{}, timeLeft:TIME_LIMIT, timer:null, submitted:false };
+let calcInited = false, calcObj = null, fbBuilt = false;
+
+const $ = id => document.getElementById(id);
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function histSVG(){
+  const bins = ["40–45","45–50","50–55","55–60","60–65","65–70","70–75","75–80"];
+  const counts = [1,2,3,3,1,0,0,1];
+  const W=460,H=250,pl=50,pb=40,pt=15,pr=15;
+  const iw=W-pl-pr, ih=H-pt-pb, bw=iw/bins.length, maxC=4;
+  let s=`<svg class="fig" viewBox="0 0 ${W} ${H}" width="${W}" xmlns="http://www.w3.org/2000/svg">`;
+  for(let v=0; v<=maxC; v++){
+    const y = pt + ih - (v/maxC)*ih;
+    s+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="#e1e5ec"/>`;
+    s+=`<text x="${pl-8}" y="${y+4}" font-size="12" text-anchor="end">${v}</text>`;
+  }
+  counts.forEach((c,i)=>{
+    const h=(c/maxC)*ih, x=pl+i*bw, y=pt+ih-h;
+    s+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" fill="#9aa3b5" stroke="#1d2433"/>`;
+    s+=`<text x="${x+bw/2}" y="${H-pb+16}" font-size="11" text-anchor="middle">${bins[i]}</text>`;
+  });
+  s+=`<line x1="${pl}" x2="${pl}" y1="${pt}" y2="${pt+ih}" stroke="#1d2433"/>`;
+  s+=`<line x1="${pl}" x2="${W-pr}" y1="${pt+ih}" y2="${pt+ih}" stroke="#1d2433"/>`;
+  s+=`<text transform="translate(14,${pt+ih/2}) rotate(-90)" font-size="13" text-anchor="middle">Number of years</text>`;
+  s+=`<text x="${pl+iw/2}" y="${H-4}" font-size="13" text-anchor="middle">Maximum temperature on April 1 (°F)</text>`;
+  s+=`</svg>`;
+  return s;
+}
+
+function tetSVG(){
+  return `<svg class="fig" viewBox="0 0 500 360" width="500" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#1d2433" stroke-width="2" fill="none">
+    <line x1="200" y1="30" x2="45" y2="325"/>
+    <line x1="200" y1="30" x2="465" y2="295"/>
+    <line x1="45" y1="325" x2="465" y2="295"/>
+    <line x1="200" y1="30" x2="210" y2="235" stroke-dasharray="0"/>
+    <line x1="210" y1="235" x2="45" y2="325" stroke="#777"/>
+    <line x1="210" y1="235" x2="465" y2="295" stroke="#777"/>
+  </g>
+  <rect x="197" y="222" width="12" height="12" fill="#c62828"/>
+  <path d="M215 262 l-12 -6 l-6 12 l12 6 z" fill="none" stroke="#1d2433"/>
+  <text x="212" y="250" font-size="16" font-style="italic">O</text>
+  <text x="188" y="22" font-size="16" font-style="italic">T</text>
+  <text x="22" y="340" font-size="16" font-style="italic">A</text>
+  <text x="474" y="300" font-size="16" font-style="italic">B</text>
+  <text x="240" y="170" font-size="14">h = 15 in</text>
+  <text x="170" y="355" font-size="13" fill="#5b6475">Note: Figure not drawn to scale</text>
+</svg>`;
+}
+
+function figHTML(q){
+  if(q.fig === "HIST") return histSVG();
+  if(q.fig === "TET") return tetSVG();
+  return q.fig || "";
+}
+
+function startTimer(){
+  clearInterval(S.timer);
+  S.timer = setInterval(()=>{
+    S.timeLeft--;
+    if(S.timeLeft<=0){ S.timeLeft=0; renderTimer(); submit(true); return; }
+    renderTimer();
+  },1000);
+  renderTimer();
+}
+function renderTimer(){
+  const m=Math.floor(S.timeLeft/60), s=S.timeLeft%60;
+  const t=$("timer");
+  t.textContent = String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+  t.classList.toggle("warn", S.timeLeft<=300);
+}
+
+function begin(){
+  const name = $("nameIn").value.trim();
+  if(!name){ $("nameErr").textContent="Please enter your name."; return; }
+  S = { name, idx:0, answers:{}, marks:{}, timeLeft:TIME_LIMIT, timer:null, submitted:false };
+  $("start").classList.add("hidden");
+  $("results").classList.add("hidden");
+  $("test").classList.remove("hidden");
+  buildNav();
+  render();
+  startTimer();
+}
+
+function buildNav(){
+  const nav=$("nav"); nav.innerHTML="";
+  for(let i=0;i<TOTAL;i++){
+    const b=document.createElement("button");
+    b.className="sq"; b.textContent=i+1; b.dataset.i=i;
+    b.onclick=()=>go(i);
+    nav.appendChild(b);
+  }
+}
+
+function render(){
+  const q=QUESTIONS[S.idx];
+  $("qnum").textContent = `Question ${S.idx+1} of ${TOTAL}`;
+  const marked = !!S.marks[S.idx];
+  $("markBtn").classList.toggle("on", marked);
+  $("markTxt").textContent = marked ? "Marked for review" : "Mark for review";
+
+  let inner = `<div class="prompt">${q.text.replace(/\n/g,"<br>")}</div>` + figHTML(q);
+  if(q.type==="mc"){
+    inner += `<div class="choices">` + q.choices.map((c,i)=>{
+      const sel = S.answers[S.idx]===i ? " sel" : "";
+      return `<button class="choice${sel}" data-i="${i}"><span class="letter">${String.fromCharCode(65+i)}</span><span>${esc(c)}</span></button>`;
+    }).join("") + `</div>`;
+  } else {
+    const v = S.answers[S.idx] ?? "";
+    inner += `<div class="numbox"><label for="numIn">Your answer</label><input id="numIn" type="text" value="${esc(v)}" placeholder="Enter a number or fraction"><div class="hint">Enter a number or a fraction such as 2/13.</div></div>`;
+  }
+  $("qcontent").innerHTML = inner;
+
+  if(q.type==="mc"){
+    document.querySelectorAll(".choice").forEach(b=>{
+      b.onclick=()=>{ S.answers[S.idx]=+b.dataset.i; render(); };
+    });
+  } else {
+    const inp=$("numIn");
+    inp.oninput=()=>{ S.answers[S.idx]=inp.value; updateNav(); };
+  }
+  $("qscroll") ;
+  document.querySelector(".qscroll").scrollTop=0;
+  updateNav();
+  $("prevBtn").disabled = S.idx===0;
+  $("nextBtn").textContent = S.idx===TOTAL-1 ? "Review and submit" : "Next";
+}
+
+function updateNav(){
+  document.querySelectorAll("#nav .sq").forEach(b=>{
+    const i=+b.dataset.i;
+    const answered = isAnswered(i);
+    b.classList.toggle("ans", answered);
+    b.classList.toggle("cur", i===S.idx);
+    b.classList.toggle("flag", !!S.marks[i]);
+  });
+  const cur=document.querySelector("#nav .sq.cur");
+  if(cur) cur.scrollIntoView({block:"nearest",inline:"nearest"});
+}
+
+function isAnswered(i){
+  const a=S.answers[i];
+  if(a===undefined||a==="") return false;
+  return true;
+}
+
+function go(i){
+  if(i<0||i>=TOTAL) return;
+  S.idx=i; render();
+}
+
+function toggleMark(){
+  S.marks[S.idx] = !S.marks[S.idx];
+  render();
+}
+
+function parseNum(s){
+  if(s===undefined||s===null) return NaN;
+  let t=String(s).trim().replace(/−/g,"-").replace(/,/g,"");
+  if(t==="") return NaN;
+  if(t.includes("/")){
+    const p=t.split("/");
+    if(p.length!==2) return NaN;
+    const a=Number(p[0]), b=Number(p[1]);
+    if(!isFinite(a)||!isFinite(b)||b===0) return NaN;
+    return a/b;
+  }
+  return Number(t);
+}
+
+function isCorrect(i){
+  const q=QUESTIONS[i], a=S.answers[i];
+  if(a===undefined||a==="") return null;
+  if(q.type==="mc") return a===q.answer;
+  const v=parseNum(a);
+  return isFinite(v) && Math.abs(v-q.val)<=q.tol;
+}
+
+function answerText(q){
+  if(q.type==="mc") return String.fromCharCode(65+q.answer)+". "+q.choices[q.answer];
+  return String(Math.round(q.val*100000)/100000);
+}
+
+function userText(i){
+  const q=QUESTIONS[i], a=S.answers[i];
+  if(a===undefined||a==="") return "(no answer)";
+  if(q.type==="mc") return String.fromCharCode(65+a)+". "+q.choices[a];
+  return String(a);
+}
+
+function submit(auto){
+  if(S.submitted) return;
+  if(!auto){
+    const blank = QUESTIONS.map((_,i)=>i).filter(i=>!isAnswered(i)).length;
+    const msg = blank>0 ? `You have ${blank} unanswered question${blank>1?"s":""}. Submit Module 2 now?` : "Submit Module 2 now?";
+    openModal(`<h2>Submit Module 2?</h2><p>${msg}</p><div class="btn-row"><button class="btn" onclick="closeModal()">Keep working</button><button class="btn primary" onclick="closeModal();submit(true)">Submit</button></div>`);
+    return;
+  }
+  S.submitted=true;
+  clearInterval(S.timer);
+  $("test").classList.add("hidden");
+  showResults();
+}
+
+function showResults(){
+  let correct=0;
+  QUESTIONS.forEach((_,i)=>{ if(isCorrect(i)) correct++; });
+  $("whoLine").textContent = `Student: ${S.name}`;
+  $("scoreBig").textContent = `${correct} / ${TOTAL}`;
+  $("scoreMsg").textContent = correct>=18 ? "Strong result. Review the questions you missed." : "Review the explanations below to find the concepts to practice.";
+  $("reviewCard").classList.add("hidden");
+  $("results").classList.remove("hidden");
+}
+
+function reviewHTML(){
+  return `<h2>Answer review</h2>` + QUESTIONS.map((q,i)=>{
+    const c=isCorrect(i);
+    const tag = c===null ? `<span class="tag blank">Blank</span>` : c ? `<span class="tag ok">Correct</span>` : `<span class="tag bad">Incorrect</span>`;
+    return `<div class="item"><div class="meta"><b>Question ${i+1}</b>${tag}</div>
+      <div class="meta">Your answer: ${esc(userText(i))}</div>
+      <div class="meta">Correct answer: ${esc(answerText(q))}</div>
+      <div class="ex">${esc(q.exp)}</div></div>`;
+  }).join("");
+}
+
+function openModal(html, wide){
+  $("modalHost").innerHTML = `<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal${wide?' wide':''}">${html}</div></div>`;
+}
+function closeModal(){ $("modalHost").innerHTML=""; }
+
+function openRef(){
+  openModal(`<div class="ref"><h2>Reference sheet</h2>
+  <table>
+    <tr><td class="f">A = πr²</td><td class="f">C = 2πr</td></tr>
+    <tr><td class="f">A = ℓw</td><td>Rectangle area</td></tr>
+    <tr><td class="f">A = ½bh</td><td>Triangle area</td></tr>
+    <tr><td class="f">c² = a² + b²</td><td>Pythagorean theorem</td></tr>
+    <tr><td class="f">V = ℓwh</td><td>Rectangular prism</td></tr>
+    <tr><td class="f">V = πr²h</td><td>Cylinder</td></tr>
+    <tr><td class="f">V = (4/3)πr³</td><td>Sphere</td></tr>
+    <tr><td class="f">V = (1/3)πr²h</td><td>Cone</td></tr>
+    <tr><td class="f">V = (1/3)ℓwh</td><td>Pyramid</td></tr>
+  </table>
+  <p><b>Special right triangles:</b> 45°-45°-90° sides are s, s, s√2. 30°-60°-90° sides are x, x√3, 2x.</p>
+  <p>The number of degrees of arc in a circle is 360. The number of radians of arc in a circle is 2π. The sum of the measures in degrees of the angles of a triangle is 180.</p>
+  <div class="btn-row"><button class="btn primary" onclick="closeModal()">Close</button></div></div>`, true);
+}
+
+/* ---- Calculator: tries Desmos first, falls back to built-in plotter ---- */
+function toggleCalc(){
+  const p=$("calcPanel");
+  const opening = p.classList.contains("off");
+  p.classList.toggle("off");
+  if(opening) initCalc();
+}
+
+function initCalc(){
+  if(calcInited) return;
+  calcInited = true;
+  const host=$("calcHost");
+  if(window.Desmos && Desmos.GraphingCalculator){
+    calcObj = Desmos.GraphingCalculator(host,{keypad:true,expressions:true,settingsMenu:false});
+    return;
+  }
+  const s=document.createElement("script");
+  s.src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6";
+  let done=false;
+  const timeout=setTimeout(()=>{ if(!done){ done=true; fallbackCalc(); } },4000);
+  s.onload=()=>{ if(done) return; done=true; clearTimeout(timeout);
+    try{ host.innerHTML=""; calcObj = Desmos.GraphingCalculator(host,{keypad:true,expressions:true,settingsMenu:false}); }
+    catch(e){ fallbackCalc(); } };
+  s.onerror=()=>{ if(!done){ done=true; clearTimeout(timeout); fallbackCalc(); } };
+  document.head.appendChild(s);
+}
+
+function fallbackCalc(){
+  if(fbBuilt) return;
+  fbBuilt=true;
+  const host=$("calcHost");
+  host.innerHTML = `<div class="fb-calc">
+    <div class="row"><input id="fb1" value="x^2-4" placeholder="y = ..."></div>
+    <div class="row"><input id="fb2" value="" placeholder="y = ..."></div>
+    <div class="row"><input id="fb3" value="" placeholder="y = ..."></div>
+    <div class="row"><button class="btn primary" id="fbPlot">Plot</button></div>
+    <canvas id="fbCv"></canvas>
+    <div class="tip">Use x as the variable. Write powers as x^2 and use sqrt(x), sin(x), cos(x), abs(x), log(x), exp(x), PI, E.</div>
+  </div>`;
+  $("fbPlot").onclick=plotFB;
+  plotFB();
+}
+
+function plotFB(){
+  const cv=$("fbCv"), ctx=cv.getContext("2d");
+  const dpr=window.devicePixelRatio||1;
+  const w=cv.clientWidth, h=cv.clientHeight;
+  cv.width=w*dpr; cv.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  const X0=-10,X1=10,Y0=-10,Y1=20;
+  const px=x=>(x-X0)/(X1-X0)*w, py=y=>h-(y-Y0)/(Y1-Y0)*h;
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle="#e1e5ec"; ctx.lineWidth=1;
+  for(let gx=-10;gx<=10;gx++){ ctx.beginPath(); ctx.moveTo(px(gx),0); ctx.lineTo(px(gx),h); ctx.stroke(); }
+  for(let gy=-10;gy<=20;gy+=2){ ctx.beginPath(); ctx.moveTo(0,py(gy)); ctx.lineTo(w,py(gy)); ctx.stroke(); }
+  ctx.strokeStyle="#1d2433"; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(px(X0),py(0)); ctx.lineTo(px(X1),py(0)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px(0),py(Y0)); ctx.lineTo(px(0),py(Y1)); ctx.stroke();
+  const colors=["#1f3a68","#d9731a","#23843a"];
+  ["fb1","fb2","fb3"].forEach((id,k)=>{
+    const raw=$(id).value.trim();
+    if(!raw) return;
+    let f;
+    try{
+      const body=raw.replace(/^y\s*=\s*/,"").replace(/\^/g,"**");
+      f=new Function("x","with(Math){return ("+body+");}");
+      f(1);
+    }catch(e){ return; }
+    ctx.strokeStyle=colors[k]; ctx.lineWidth=2; ctx.beginPath();
+    let pen=false;
+    for(let i=0;i<=600;i++){
+      const x=X0+(X1-X0)*i/600;
+      let y;
+      try{ y=f(x); }catch(e){ y=NaN; }
+      if(!isFinite(y)||y<Y0-50||y>Y1+50){ pen=false; continue; }
+      if(!pen){ ctx.moveTo(px(x),py(y)); pen=true; } else ctx.lineTo(px(x),py(y));
+    }
+    ctx.stroke();
+  });
+}
+
+$("beginBtn").onclick=begin;
+$("nameIn").addEventListener("keydown",e=>{ if(e.key==="Enter") begin(); });
+$("markBtn").onclick=toggleMark;
+$("prevBtn").onclick=()=>go(S.idx-1);
+$("nextBtn").onclick=()=>{ if(S.idx===TOTAL-1) submit(false); else go(S.idx+1); };
+$("submitBtn").onclick=()=>submit(false);
+$("refBtn").onclick=openRef;
+$("calcBtn").onclick=toggleCalc;
+$("calcClose").onclick=toggleCalc;
+$("reviewBtn").onclick=()=>{ $("reviewCard").innerHTML=reviewHTML(); $("reviewCard").classList.remove("hidden"); };
+$("restartBtn").onclick=()=>{ $("results").classList.add("hidden"); $("start").classList.remove("hidden"); $("nameIn").value=""; $("nameErr").textContent=""; };
+</script>
+</body>
+</html>
